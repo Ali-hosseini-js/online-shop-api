@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class BlogDto {
+export class BlogCategoryDto {
   @IsString()
-  @IsNotEmpty({ message: 'عنوان نباید خالی باشد.' })
+  @IsNotEmpty()
   title: string;
   @IsString()
   @IsNotEmpty()
@@ -10,7 +10,4 @@ export class BlogDto {
   @IsString()
   @IsNotEmpty()
   image: string;
-  @IsString()
-  @IsNotEmpty()
-  category: string;
 }
