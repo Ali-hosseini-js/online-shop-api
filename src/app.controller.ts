@@ -17,6 +17,7 @@ import { deleteImage, saveImage, saveImages } from './shared/utils/file-utils';
 import { UploadFileDto } from './shared/dtos/upload-file.dto';
 import { UploadFilesDto } from './shared/dtos/upload-files.dto';
 import { DeleteFileDto } from './shared/dtos/delete-file.dto';
+import { ImagesPipe } from './shared/pipes/images.pipe';
 
 @ApiTags('shared')
 @Controller()
@@ -49,7 +50,7 @@ export class AppController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('files'))
   uploadFiles(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles(ImagesPipe) files: Array<Express.Multer.File>,
     @Body() body: UploadFilesDto,
   ) {
     return saveImages(files, body);

@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ApiKeyGuard } from './shared/guards/api-key.guard';
+import { IdPipe } from './shared/pipes/id.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,11 +12,13 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      skipMissingProperties: true,
-      forbidNonWhitelisted: false,
+      forbidNonWhitelisted: true,
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+
+  app.useGlobalPipes(new IdPipe());
+  // app.useGlobalGuards(new ApiKeyGuard());
 
   const config = new DocumentBuilder().setTitle('online shop').build();
   const document = SwaggerModule.createDocument(app, config);

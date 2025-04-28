@@ -10,8 +10,6 @@ export class UploadFilesDto {
       format: 'binary',
     },
   })
-  files: any[];
-
   @IsOptional()
   folder?: string;
 

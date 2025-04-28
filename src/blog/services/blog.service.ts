@@ -69,8 +69,10 @@ export class BlogService {
   }
 
   async delete(id: string) {
-    const blog = await this.findOne(id, { _id: 1, image: 1 });
+    const blog = await this.findOne(id);
     await deleteImage(blog.image, 'blog');
     await blog.deleteOne();
+
+    return blog;
   }
 }
