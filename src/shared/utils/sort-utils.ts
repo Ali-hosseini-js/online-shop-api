@@ -7,6 +7,8 @@ export const sortFunction = (sort: Sort | undefined) => {
     sortObject = { title: 1 };
   } else if (sort === Sort.UpdatedAt) {
     sortObject = { updatedAt: -1 };
+  } else if (sort === Sort.LastName) {
+    sortObject = { lastName: 1 };
   } else {
     sortObject = { createdAt: -1 };
   }
