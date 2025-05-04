@@ -9,7 +9,11 @@ export class User extends Document {
   @Prop()
   lastName: string;
 
-  @Prop()
+  @Prop({
+    unique: true,
+    type: String,
+    required: true,
+  })
   mobile: string;
 
   @Prop()

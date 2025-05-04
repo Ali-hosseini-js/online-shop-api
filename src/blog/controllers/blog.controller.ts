@@ -4,14 +4,21 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { BlogDto } from '../dtos/blog.dto';
 import { BlogService } from '../services/blog.service';
 import { BlogQueryDto } from '../dtos/blog-query.dto';
+import { UpdateBlogDto } from '../dtos/update-blog.dto';
+import { JwtGuard } from 'src/shared/guards/jwt.guard';
+import { User } from 'src/shared/decorators/user.decorator';
+import { request } from 'http';
 
 @ApiTags('Blog')
 // @ApiHeader({
@@ -19,6 +26,7 @@ import { BlogQueryDto } from '../dtos/blog-query.dto';
 //   description: 'API KEY',
 // })
 @Controller('blog')
+@UseGuards(JwtGuard)
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
   @Get()
@@ -27,8 +35,8 @@ export class BlogController {
   }
 
   @Post()
-  create(@Body() body: BlogDto) {
-    return this.blogService.create(body);
+  create(@Body() body: BlogDto, @User() user: string) {
+    return this.blogService.create(body, user);
   }
 
   @Get(':id')
@@ -36,8 +44,8 @@ export class BlogController {
     return this.blogService.findOne(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() body: BlogDto) {
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: UpdateBlogDto) {
     return this.blogService.update(id, body);
   }
 

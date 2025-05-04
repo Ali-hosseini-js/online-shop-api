@@ -6,6 +6,7 @@ import { Blog } from '../schemas/blog.schema';
 import { BlogQueryDto } from '../dtos/blog-query.dto';
 import { sortFunction } from 'src/shared/utils/sort-utils';
 import { deleteImage } from 'src/shared/utils/file-utils';
+import { UpdateBlogDto } from '../dtos/update-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -15,12 +16,20 @@ export class BlogService {
 
   async findAll(queryParams: BlogQueryDto, selectObject: any = { __v: 0 }) {
     // be limit va page meghdar pishfarz dadim
-    const { limit = 5, page = 1, title, sort } = queryParams;
+    const { limit = 5, page = 1, title, sort, user, category } = queryParams;
 
     const query: any = {};
 
     if (title) {
       query.title = { $regex: title, $options: 'i' };
+    }
+
+    if (user) {
+      query.user = user;
+    }
+
+    if (category) {
+      query.category = category;
     }
 
     const sortObject = sortFunction(sort);
@@ -52,17 +61,17 @@ export class BlogService {
     }
   }
 
-  async create(body: BlogDto) {
-    const newBlog = new this.blogModel(body);
+  async create(body: BlogDto, user: string) {
+    const newBlog = new this.blogModel({ ...body, user: user });
 
     await newBlog.save();
     return newBlog;
   }
 
-  async update(id: string, body: BlogDto) {
+  async update(id: string, body: UpdateBlogDto) {
     const blog = await this.findOne(id, { _id: 1, image: 1 });
 
-    if (blog.image !== body.image) {
+    if (body?.image) {
       await deleteImage(blog.image, 'blog');
     }
     return await this.blogModel.findByIdAndUpdate(id, body, { new: true });

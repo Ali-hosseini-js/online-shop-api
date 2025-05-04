@@ -1,16 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { User } from '../schemas/user.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserQueryDto } from '../dtos/user-query.dto';
 import { sortFunction } from 'src/shared/utils/sort-utils';
 import { UserDto } from '../dtos/user.dto';
-import { async } from 'rxjs';
+import { updateUserDto } from '../dtos/update-user.dto';
+import { AuthDto } from '../dtos/auth.dto';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async findAll(queryParams: UserQueryDto, selectObject: any = { __v: 0 }) {
@@ -59,7 +67,7 @@ export class UserService {
     return newUser;
   }
 
-  async update(id: string, body: UserDto) {
+  async update(id: string, body: updateUserDto) {
     return await this.userModel.findByIdAndUpdate(id, body, { new: true });
   }
 
@@ -67,5 +75,31 @@ export class UserService {
     const user = await this.findOne(id);
     await user.deleteOne();
     return user;
+  }
+
+  async findOneByMobile(mobile: string) {
+    const user = await this.userModel.findOne({ mobile: mobile });
+    if (user) {
+      return user;
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  async signin(body: AuthDto) {
+    const { mobile, password } = body;
+    const user = await this.findOneByMobile(mobile);
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      throw new BadRequestException('رمز عبور صحیح نیست');
+    } else {
+      const payload = { _id: user._id };
+
+      const token = this.jwtService.sign(payload);
+
+      return { token };
+    }
   }
 }

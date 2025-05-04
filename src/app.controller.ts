@@ -8,6 +8,7 @@ import {
   Post,
   UploadedFile,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AppService } from './app.service';
@@ -18,9 +19,11 @@ import { UploadFileDto } from './shared/dtos/upload-file.dto';
 import { UploadFilesDto } from './shared/dtos/upload-files.dto';
 import { DeleteFileDto } from './shared/dtos/delete-file.dto';
 import { ImagesPipe } from './shared/pipes/images.pipe';
+import { JwtGuard } from './shared/guards/jwt.guard';
 
 @ApiTags('shared')
 @Controller()
+@UseGuards(JwtGuard)
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

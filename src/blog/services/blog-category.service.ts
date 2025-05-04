@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { BlogCategoryQueryDto } from '../dtos/blog-category-query.dto';
 import { sortFunction } from 'src/shared/utils/sort-utils';
 import { deleteImage } from 'src/shared/utils/file-utils';
+import { UpdateBlogCategryDto } from '../dtos/update-blog-category.dto';
 
 @Injectable()
 export class BlogCategoryService {
@@ -59,10 +60,10 @@ export class BlogCategoryService {
     return newBlogCategory;
   }
 
-  async update(id: string, body: BlogCategoryDto) {
+  async update(id: string, body: UpdateBlogCategryDto) {
     const blogCategory = await this.findOne(id, { _id: 1, image: 1 });
 
-    if (blogCategory.image !== body.image) {
+    if (body?.image) {
       await deleteImage(blogCategory.image, 'blogCategory');
     }
 
