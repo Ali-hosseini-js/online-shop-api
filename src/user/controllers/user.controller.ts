@@ -20,10 +20,12 @@ import { PasswordPipe } from 'src/shared/pipes/password.pipe';
 import { PasswordInterceptor } from 'src/shared/interceptors/password.interceptor';
 import { updateUserDto } from '../dtos/update-user.dto';
 import { JwtGuard } from 'src/shared/guards/jwt.guard';
+import { Role } from '../schemas/user.schema';
+import { RoleGuard } from 'src/shared/guards/role.guard';
 
 @ApiTags('User')
 @Controller('user')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, new RoleGuard([Role.Admin]))
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()

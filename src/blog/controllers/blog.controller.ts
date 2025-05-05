@@ -18,7 +18,8 @@ import { BlogQueryDto } from '../dtos/blog-query.dto';
 import { UpdateBlogDto } from '../dtos/update-blog.dto';
 import { JwtGuard } from 'src/shared/guards/jwt.guard';
 import { User } from 'src/shared/decorators/user.decorator';
-import { request } from 'http';
+import { RoleGuard } from 'src/shared/guards/role.guard';
+import { Role } from 'src/user/schemas/user.schema';
 
 @ApiTags('Blog')
 // @ApiHeader({
@@ -26,7 +27,7 @@ import { request } from 'http';
 //   description: 'API KEY',
 // })
 @Controller('blog')
-@UseGuards(JwtGuard)
+@UseGuards(JwtGuard, new RoleGuard([Role.CopyRighter, Role.Admin]))
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
   @Get()

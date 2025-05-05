@@ -13,6 +13,7 @@ import { updateUserDto } from '../dtos/update-user.dto';
 import { AuthDto } from '../dtos/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ConfirmDto } from '../dtos/confirm.dto';
 
 @Injectable()
 export class UserService {
@@ -95,11 +96,41 @@ export class UserService {
     if (!isPasswordCorrect) {
       throw new BadRequestException('رمز عبور صحیح نیست');
     } else {
-      const payload = { _id: user._id };
+      await this.sendCode(mobile);
+    }
+  }
+
+  async confirm(body: ConfirmDto) {
+    const { mobile, code } = body;
+
+    const user = await this.findOneByMobile(mobile);
+
+    const isCodeCorrect = await bcrypt.compare(code, user.code);
+
+    if (!isCodeCorrect) {
+      throw new BadRequestException('کد صحیح نیست');
+    } else {
+      const payload = { _id: user._id, role: user.role };
 
       const token = this.jwtService.sign(payload);
 
       return { token };
     }
+  }
+
+  async sendCode(mobile: string) {
+    const user = await this.findOneByMobile(mobile);
+
+    const code = Math.floor(Math.random() * 90000) + 10000;
+
+    const salt = await bcrypt.genSalt();
+
+    const hashedCode = await bcrypt.hash(code.toString(), salt);
+
+    user.code = hashedCode;
+
+    await user.save();
+
+    console.log(code);
   }
 }

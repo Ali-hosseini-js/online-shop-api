@@ -1,6 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+export enum Role {
+  User = 'user',
+  Admin = 'admin',
+  CopyRighter = 'copyRighter',
+}
+
 @Schema({ timestamps: true })
 export class User extends Document {
   @Prop()
@@ -18,6 +24,12 @@ export class User extends Document {
 
   @Prop()
   password: string;
+
+  @Prop()
+  role: Role;
+
+  @Prop()
+  code: string;
 }
 
 export const userSchema = SchemaFactory.createForClass(User);

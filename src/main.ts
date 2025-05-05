@@ -5,9 +5,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { ApiKeyGuard } from './shared/guards/api-key.guard';
 import { IdPipe } from './shared/pipes/id.pipe';
 import { DuplicateFilter } from './shared/filters/duplicate.filter';
+import helmet from 'helmet';
+const csrf = require('als-csrf');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(helmet());
+  app.use(csrf());
   app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({

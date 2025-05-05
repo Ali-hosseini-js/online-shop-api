@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Role } from '../schemas/user.schema';
 
 export class UserDto {
   @IsNotEmpty()
@@ -16,4 +17,8 @@ export class UserDto {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @IsNotEmpty()
+  @IsEnum(Role)
+  role: Role;
 }
