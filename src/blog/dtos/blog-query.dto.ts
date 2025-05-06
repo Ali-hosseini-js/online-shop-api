@@ -9,4 +9,11 @@ export class BlogQueryDto extends GeneralQueryDto {
   @IsOptional()
   @IsString()
   category?: string;
+
+  @IsOptional()
+  @IsString()
+  url?: string;
+
+  @IsOptional()
+  exclude?: string[];
 }

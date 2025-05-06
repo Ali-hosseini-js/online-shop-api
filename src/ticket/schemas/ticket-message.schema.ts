@@ -1,30 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { BlogCategory } from './blog-category.schema';
 import { User } from 'src/user/schemas/user.schema';
+import { Ticket } from './ticket.schema';
 
 @Schema({ timestamps: true })
-export class Blog extends Document {
-  @Prop()
-  title: string;
-  @Prop()
+export class TicketMessage extends Document {
+  @Prop({ required: false, default: null })
   content: string;
-  @Prop()
+
+  @Prop({ required: false, default: null })
   image: string;
 
   @Prop({
-    required: true,
-    unique: true,
-    type: String,
-  })
-  url: string;
-
-  @Prop({
     type: Types.ObjectId,
-    ref: BlogCategory.name,
+    ref: Ticket.name,
     required: true,
   })
-  category: BlogCategory;
+  ticket: Ticket;
 
   @Prop({
     type: Types.ObjectId,
@@ -34,4 +26,4 @@ export class Blog extends Document {
   user: User;
 }
 
-export const blogSchema = SchemaFactory.createForClass(Blog);
+export const ticketMessageSchema = SchemaFactory.createForClass(TicketMessage);

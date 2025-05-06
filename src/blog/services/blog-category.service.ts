@@ -7,6 +7,7 @@ import { BlogCategoryQueryDto } from '../dtos/blog-category-query.dto';
 import { sortFunction } from 'src/shared/utils/sort-utils';
 import { deleteImage } from 'src/shared/utils/file-utils';
 import { UpdateBlogCategryDto } from '../dtos/update-blog-category.dto';
+import { BlogCategoryResponseDto } from '../dtos/blog-category-response.dto';
 
 @Injectable()
 export class BlogCategoryService {
@@ -19,12 +20,15 @@ export class BlogCategoryService {
     queryParams: BlogCategoryQueryDto,
     selectObject: any = { __v: 0 },
   ) {
-    const { limit = 5, page = 1, title, sort } = queryParams;
+    const { limit = 5, page = 1, title, sort, url } = queryParams;
 
     const query: any = {};
 
     if (title) {
       query.title = { $regex: title, $options: 'i' };
+    }
+    if (url) {
+      query.url = { $regex: url, $options: 'i' };
     }
 
     const sortObject = sortFunction(sort);
@@ -45,6 +49,21 @@ export class BlogCategoryService {
   async findOne(id: string, selectObject: any = { __v: 0 }) {
     const blogCategory = await this.blogCategoryModel
       .findOne({ _id: id })
+      .select(selectObject)
+      .exec();
+    if (blogCategory) {
+      return blogCategory;
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  async findOneWithUrl(
+    url: string,
+    selectObject: any = { __v: 0 },
+  ): Promise<BlogCategoryResponseDto> {
+    const blogCategory = await this.blogCategoryModel
+      .findOne({ url: url })
       .select(selectObject)
       .exec();
     if (blogCategory) {

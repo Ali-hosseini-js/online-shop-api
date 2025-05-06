@@ -11,7 +11,7 @@ const csrf = require('als-csrf');
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
-  app.use(csrf());
+  // app.use(csrf());
   app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({

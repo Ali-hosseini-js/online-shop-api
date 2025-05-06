@@ -9,6 +9,10 @@ export const sortFunction = (sort: Sort | undefined) => {
     sortObject = { updatedAt: -1 };
   } else if (sort === Sort.LastName) {
     sortObject = { lastName: 1 };
+  } else if (sort === Sort.Cheap) {
+    sortObject = { price: 1 };
+  } else if (sort === Sort.Expensive) {
+    sortObject = { price: -1 };
   } else {
     sortObject = { createdAt: -1 };
   }

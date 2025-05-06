@@ -1,16 +1,19 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class BlogCategoryDto {
-  @IsString()
+export class SignUpDto {
   @IsNotEmpty()
-  title: string;
   @IsString()
+  firstName: string;
+
   @IsNotEmpty()
-  content: string;
   @IsString()
+  lastName: string;
+
   @IsNotEmpty()
-  image: string;
   @IsString()
+  mobile: string;
+
   @IsNotEmpty()
-  url: string;
+  @IsString()
+  password: string;
 }

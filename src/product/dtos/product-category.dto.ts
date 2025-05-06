@@ -1,6 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-
-export class BlogCategoryDto {
+import { IsString, IsNotEmpty } from 'class-validator';
+export class ProductCategoryDto {
   @IsString()
   @IsNotEmpty()
   title: string;

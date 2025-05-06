@@ -14,6 +14,9 @@ import { TimeMiddleware } from './shared/middleware/time.middleware';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { SeoModule } from './seo/seo.module';
+import { ProductModule } from './product/product.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
   imports: [
@@ -45,6 +48,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       },
     ]),
     UserModule,
+    SeoModule,
+    ProductModule,
+    TicketModule,
   ],
   controllers: [AppController],
   providers: [

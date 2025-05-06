@@ -20,6 +20,8 @@ import { JwtGuard } from 'src/shared/guards/jwt.guard';
 import { User } from 'src/shared/decorators/user.decorator';
 import { RoleGuard } from 'src/shared/guards/role.guard';
 import { Role } from 'src/user/schemas/user.schema';
+import { UrlPipe } from 'src/shared/pipes/url.pipe';
+import { BodyIdPipe } from 'src/shared/pipes/body-id.pipe';
 
 @ApiTags('Blog')
 // @ApiHeader({
@@ -36,7 +38,10 @@ export class BlogController {
   }
 
   @Post()
-  create(@Body() body: BlogDto, @User() user: string) {
+  create(
+    @Body(UrlPipe, new BodyIdPipe(['category'])) body: BlogDto,
+    @User() user: string,
+  ) {
     return this.blogService.create(body, user);
   }
 
@@ -46,7 +51,10 @@ export class BlogController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateBlogDto) {
+  update(
+    @Param('id') id: string,
+    @Body(UrlPipe, new BodyIdPipe(['category'])) body: UpdateBlogDto,
+  ) {
     return this.blogService.update(id, body);
   }
 

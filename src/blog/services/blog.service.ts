@@ -7,6 +7,7 @@ import { BlogQueryDto } from '../dtos/blog-query.dto';
 import { sortFunction } from 'src/shared/utils/sort-utils';
 import { deleteImage } from 'src/shared/utils/file-utils';
 import { UpdateBlogDto } from '../dtos/update-blog.dto';
+import { BlogResponseDto } from '../dtos/blog-response.dto';
 
 @Injectable()
 export class BlogService {
@@ -16,12 +17,25 @@ export class BlogService {
 
   async findAll(queryParams: BlogQueryDto, selectObject: any = { __v: 0 }) {
     // be limit va page meghdar pishfarz dadim
-    const { limit = 5, page = 1, title, sort, user, category } = queryParams;
+    const {
+      limit = 5,
+      page = 1,
+      title,
+      sort,
+      user,
+      category,
+      url,
+      exclude,
+    } = queryParams;
 
     const query: any = {};
 
     if (title) {
       query.title = { $regex: title, $options: 'i' };
+    }
+
+    if (url) {
+      query.url = { $regex: url, $options: 'i' };
     }
 
     if (user) {
@@ -30,6 +44,10 @@ export class BlogService {
 
     if (category) {
       query.category = category;
+    }
+
+    if (exclude?.length) {
+      query._id = { $nin: exclude };
     }
 
     const sortObject = sortFunction(sort);
@@ -50,6 +68,23 @@ export class BlogService {
   async findOne(id: string, selectObject: any = { __v: 0 }) {
     const blog = await this.blogModel
       .findOne({ _id: id })
+      .populate('category', { title: 1 })
+      .select(selectObject)
+      .exec();
+
+    if (blog) {
+      return blog;
+    } else {
+      throw new NotFoundException();
+    }
+  }
+
+  async findOneWithUrl(
+    url: string,
+    selectObject: any = { __v: 0 },
+  ): Promise<BlogResponseDto> {
+    const blog = await this.blogModel
+      .findOne({ url: url })
       .populate('category', { title: 1 })
       .select(selectObject)
       .exec();

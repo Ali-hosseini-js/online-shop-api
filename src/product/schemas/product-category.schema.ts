@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class BlogCategory extends Document {
+export class ProductCategory extends Document {
   @Prop()
   title: string;
   @Prop()
@@ -17,4 +17,5 @@ export class BlogCategory extends Document {
   url: string;
 }
 
-export const blogCategorySchema = SchemaFactory.createForClass(BlogCategory);
+export const productCategorySchema =
+  SchemaFactory.createForClass(ProductCategory);

@@ -5,6 +5,8 @@ export enum Sort {
   CreatedAt = 'createdAt',
   UpdatedAt = 'updatedAt',
   LastName = 'lastName',
+  Cheap = 'cheap',
+  Expensive = 'expensive',
 }
 
 export class GeneralQueryDto {
