@@ -2,6 +2,15 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
 
+export interface TicketInterface extends Document {
+  _id: Types.ObjectId;
+  title: string;
+  user: User;
+  status: TicketStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export enum TicketStatus {
   Pending = 'pending',
   Responded = 'responded',

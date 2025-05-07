@@ -10,14 +10,19 @@ import {
   productCategorySchema,
 } from './schemas/product-category.schema';
 import { SiteProductController } from './controllers/site-product.controller';
+import {
+  InventoryRecord,
+  inventoryRecordSchema,
+} from './schemas/inventory-record.schema';
+import { InventoryRecordService } from './services/inventory-record.service';
 
 @Module({
   controllers: [
     ProductController,
     ProductCategoryController,
-    SiteProductController
+    SiteProductController,
   ],
-  providers: [ProductService, ProductCategoryService],
+  providers: [ProductService, ProductCategoryService, InventoryRecordService],
   imports: [
     MongooseModule.forFeature([
       {
@@ -27,6 +32,10 @@ import { SiteProductController } from './controllers/site-product.controller';
       {
         name: ProductCategory.name,
         schema: productCategorySchema,
+      },
+      {
+        name: InventoryRecord.name,
+        schema: inventoryRecordSchema,
       },
     ]),
   ],

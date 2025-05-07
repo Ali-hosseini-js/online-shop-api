@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Types } from "mongoose";
-import { ProductCategory } from "./product-category.schema";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { ProductCategory } from './product-category.schema';
 
 @Schema({ timestamps: true })
 export class Product extends Document {
@@ -28,6 +28,12 @@ export class Product extends Document {
     required: true,
   })
   category: ProductCategory;
+
+  @Prop({
+    required: false,
+    default: 0,
+  })
+  stock: number;
 
   @Prop({
     required: true,

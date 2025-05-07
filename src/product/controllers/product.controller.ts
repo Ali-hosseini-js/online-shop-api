@@ -20,13 +20,26 @@ import { RoleGuard } from 'src/shared/guards/role.guard';
 import { Role } from 'src/user/schemas/user.schema';
 import { UrlPipe } from 'src/shared/pipes/url.pipe';
 import { BodyIdPipe } from 'src/shared/pipes/body-id.pipe';
+import { StockDto } from '../dtos/stock.dto';
+import { EditedBy } from '../schemas/inventory-record.schema';
+import { InventoryRecordService } from '../services/inventory-record.service';
+import { InventoryRecordQueryDto } from '../dtos/inventory-record-query.dto';
 
 @ApiTags('Product')
 @Controller('product')
 @UseGuards(JwtGuard, new RoleGuard([Role.Admin, Role.CopyRighter]))
 @ApiBearerAuth()
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly inventoryRecordService: InventoryRecordService,
+  ) {}
+
+  @Get('inventory-record')
+  findAllInventoryRecords(@Query() queryParams: InventoryRecordQueryDto) {
+    return this.inventoryRecordService.findAll(queryParams);
+  }
+
   @Get()
   findAll(@Query() queryParams: ProductQueryDto) {
     return this.productService.findAll(queryParams);
@@ -40,6 +53,20 @@ export class ProductController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(id);
+  }
+
+  @Patch('add-stock')
+  addStock(@Body(new BodyIdPipe(['id'])) body: StockDto) {
+    return this.productService.addStock(body.id, body.quantity, EditedBy.Admin);
+  }
+
+  @Patch('remove-stock')
+  removeStock(@Body(new BodyIdPipe(['id'])) body: StockDto) {
+    return this.productService.removeStock(
+      body.id,
+      body.quantity,
+      EditedBy.Admin,
+    );
   }
 
   @Patch(':id')

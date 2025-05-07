@@ -3,6 +3,17 @@ import { Document, Types } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
 import { Ticket } from './ticket.schema';
 
+export interface TicketMessageInterface extends Document {
+  _id: Types.ObjectId;
+  content: string;
+  image?: string;
+  ticket: Ticket;
+  user: User;
+  createdAt?: Date;
+  updatedAt?: Date;
+  __v?: number;
+}
+
 @Schema({ timestamps: true })
 export class TicketMessage extends Document {
   @Prop({ required: false, default: null })

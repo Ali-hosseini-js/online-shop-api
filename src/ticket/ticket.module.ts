@@ -5,6 +5,9 @@ import {
   TicketMessage,
   ticketMessageSchema,
 } from './schemas/ticket-message.schema';
+import { PanelTicketController } from './controllers/panel-ticket.controller';
+import { TicketService } from './services/ticket.service';
+import { TicketController } from './controllers/ticket.controller';
 
 @Module({
   imports: [
@@ -13,5 +16,7 @@ import {
       { name: TicketMessage.name, schema: ticketMessageSchema },
     ]),
   ],
+  controllers: [PanelTicketController, TicketController],
+  providers: [TicketService],
 })
 export class TicketModule {}
