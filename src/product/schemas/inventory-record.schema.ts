@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Product } from './product.schema';
+import { Order } from 'src/shop/schemas/order.schema';
 
 export enum Action {
   Add = 'add',
@@ -22,8 +23,13 @@ export class InventoryRecord extends Document {
   @Prop()
   editedBy: EditedBy;
 
-  @Prop({ required: false, default: null })
-  order: string;
+  @Prop({
+    type: Types.ObjectId,
+    ref: Order.name,
+    required: false,
+    default: null,
+  })
+  order: Order;
 
   @Prop({ type: Types.ObjectId, ref: Product.name, required: true })
   product: Product;

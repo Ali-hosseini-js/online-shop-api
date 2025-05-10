@@ -22,6 +22,7 @@ import { InventoryRecordService } from './services/inventory-record.service';
     ProductCategoryController,
     SiteProductController,
   ],
+  exports: [ProductService],
   providers: [ProductService, ProductCategoryService, InventoryRecordService],
   imports: [
     MongooseModule.forFeature([

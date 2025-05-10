@@ -90,6 +90,16 @@ export class CartService {
     return this.getCartDetails(id);
   }
 
+  async removeCartAndItems(id: string) {
+    const items = await this.findCartItems(id);
+
+    for (const item of items) {
+      await this.deleteCartItem(item._id.toString());
+    }
+
+    await this.deleteCart(id);
+  }
+
   async addItemToCart(id: string, body: newCartDto) {
     const items = await this.findCartItems(id);
 

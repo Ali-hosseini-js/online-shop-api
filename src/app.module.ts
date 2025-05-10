@@ -18,6 +18,8 @@ import { SeoModule } from './seo/seo.module';
 import { ProductModule } from './product/product.module';
 import { TicketModule } from './ticket/ticket.module';
 import { ShopModule } from './shop/shop.module';
+import { BullModule } from '@nestjs/bull';
+import { CommentModule } from './comment/comment/comment.module';
 
 @Module({
   imports: [
@@ -53,6 +55,13 @@ import { ShopModule } from './shop/shop.module';
     ProductModule,
     TicketModule,
     ShopModule,
+    CommentModule,
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: +process.env.REDIS_PORT!,
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [

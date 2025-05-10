@@ -145,7 +145,9 @@ export class ProductService {
     const product = await this.findOne(id);
     const oldStock = product.stock || 0;
     if (oldStock === 0) {
-      throw new BadRequestException('تعداد موجودی محصول صفر می باشد');
+      throw new BadRequestException(
+        `تعداد موجودی محصول ${product?.title} صفر می باشد`,
+      );
     }
     if (oldStock < quantity) {
       throw new BadRequestException('موجودی کافی نیست');

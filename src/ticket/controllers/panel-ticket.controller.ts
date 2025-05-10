@@ -21,7 +21,7 @@ import { TicketStatus } from '../schemas/ticket.schema';
 @ApiTags('Panel Ticket')
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@Controller('panel-ticket')
+@Controller('panel/ticket')
 export class PanelTicketController {
   constructor(private readonly ticketService: TicketService) {}
 
