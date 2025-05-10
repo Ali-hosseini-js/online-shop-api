@@ -180,7 +180,7 @@ export class OrderService {
   async createPaymentRequest(finalPrice: number) {
     const bankData = {
       amount: finalPrice * 10,
-      decription: 'توضیحات سفارش',
+      description: 'توضیحات سفارش',
       merchant_id: process.env.MERCHANT_ID,
       callback_url: `${process.env.SERVER_URL}/site/order/callback`,
     };
