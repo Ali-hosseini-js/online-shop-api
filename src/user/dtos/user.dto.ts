@@ -1,14 +1,16 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Role } from '../schemas/user.schema';
 
 export class UserDto {
   @IsNotEmpty()
   @IsString()
-  firstName: string;
+  @IsOptional()
+  firstName?: string;
 
   @IsNotEmpty()
   @IsString()
-  lastName: string;
+  @IsOptional()
+  lastName?: string;
 
   @IsNotEmpty()
   @IsString()
@@ -16,7 +18,8 @@ export class UserDto {
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  @IsOptional()
+  password?: string;
 
   @IsNotEmpty()
   @IsEnum(Role)

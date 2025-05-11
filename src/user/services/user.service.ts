@@ -63,9 +63,14 @@ export class UserService {
   }
 
   async create(body: UserDto) {
-    const newUser = new this.userModel(body);
-    await newUser.save();
-    return newUser;
+    const user = await this.userModel.findOne({ mobile: body.mobile });
+    if (!user) {
+      const newUser = new this.userModel(body);
+      await newUser.save();
+      return newUser;
+    } else {
+      return user;
+    }
   }
 
   async update(id: string, body: updateUserDto) {
@@ -87,18 +92,18 @@ export class UserService {
     }
   }
 
-  async signin(body: AuthDto) {
-    const { mobile, password } = body;
-    const user = await this.findOneByMobile(mobile);
+  // async signin(body: AuthDto) {
+  //   const { mobile, password } = body;
+  //   const user = await this.findOneByMobile(mobile);
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  //   const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordCorrect) {
-      throw new BadRequestException('رمز عبور صحیح نیست');
-    } else {
-      await this.sendCode(mobile);
-    }
-  }
+  //   if (!isPasswordCorrect) {
+  //     throw new BadRequestException('رمز عبور صحیح نیست');
+  //   } else {
+  //     await this.sendCode(mobile);
+  //   }
+  // }
 
   async confirm(body: ConfirmDto) {
     const { mobile, code } = body;
@@ -114,7 +119,9 @@ export class UserService {
 
       const token = this.jwtService.sign(payload);
 
-      return { token };
+      return {
+        token,
+      };
     }
   }
 
@@ -130,7 +137,8 @@ export class UserService {
     user.code = hashedCode;
 
     await user.save();
-
     console.log(code);
+
+    return { code: code, message: 'success', statusCode: 201 };
   }
 }

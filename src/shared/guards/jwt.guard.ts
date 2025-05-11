@@ -8,10 +8,10 @@ export class JwtGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
 
-    console.log(request?.headers?.authorization);
+    console.log(request?.cookies?.access_token);
 
     try {
-      const token = request?.headers?.authorization;
+      const token = request?.cookies?.access_token;
       if (token) {
         const payload = await this.jwtService.verifyAsync(token);
         request['user'] = { _id: payload?._id, role: payload?.role };
