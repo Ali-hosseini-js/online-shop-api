@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthDto } from '../dtos/auth.dto';
 import { MobilePipe } from 'src/shared/pipes/mobile.pipe';
@@ -9,12 +9,16 @@ import { ResendDto } from '../dtos/resend.dto';
 import { SignUpDto } from '../dtos/signup.dto';
 import { FarsiPipe } from 'src/shared/pipes/farsi.pipe';
 import { Role } from '../schemas/user.schema';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Authentications')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
   // @Post('sign-in')
   // signin(@Body(MobilePipe, new PasswordPipe(false)) body: AuthDto) {
   //   return this.userService.signin(body);
@@ -32,7 +36,7 @@ export class AuthController {
       httpOnly: true,
       secure: false, // Only use secure in production
       sameSite: 'lax', // Helps with CSRF protection
-      maxAge: 24 * 60 * 60 * 1000, // Example: 1 day expiration
+      maxAge: 1 * 60 * 60 * 1000, // Example: 1 hour expiration
       path: '/', // Make cookie available across your site
     });
 
@@ -55,6 +59,17 @@ export class AuthController {
 
     if (user?._id) {
       return this.userService.sendCode(user.mobile);
+    }
+  }
+
+  @Get('whoami')
+  async whoami(@Req() request: Request) {
+    try {
+      const token = request?.cookies?.access_token;
+      const payload = await this.jwtService.verifyAsync(token);
+      return { id: payload?._id, role: payload?.role };
+    } catch (error) {
+      return { id: '', role: '' };
     }
   }
 }

@@ -115,7 +115,11 @@ export class UserService {
     if (!isCodeCorrect) {
       throw new BadRequestException('کد صحیح نیست');
     } else {
-      const payload = { _id: user._id, role: user.role };
+      const payload = {
+        _id: user._id,
+        role: user.role,
+        exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      };
 
       const token = this.jwtService.sign(payload);
 
