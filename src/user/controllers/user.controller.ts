@@ -36,7 +36,7 @@ export class UserController {
   @Post()
   @UseInterceptors(PasswordInterceptor)
   create(@Body(FarsiPipe, MobilePipe, new PasswordPipe(true)) body: UserDto) {
-    return this.userService.create(body);
+    return this.userService.adminCreate(body);
   }
 
   @Get(':id')
@@ -53,7 +53,7 @@ export class UserController {
     return this.userService.update(id, body);
   }
 
-  @Delete('id')
+  @Delete(':id')
   delete(@Param('id') id: string) {
     return this.userService.delete(id);
   }

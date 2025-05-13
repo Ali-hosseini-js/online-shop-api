@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -73,6 +75,27 @@ export class UserService {
     }
   }
 
+  async adminCreate(body: UserDto) {
+    const user = await this.userModel.findOne({ mobile: body.mobile });
+    if (!user) {
+      const newUser = new this.userModel(body);
+      await newUser.save();
+
+      throw new HttpException(
+        {
+          message: 'کاربر با موفقیت ساخته شد',
+        },
+        HttpStatus.CREATED,
+      );
+    } else {
+      throw new HttpException(
+        {
+          message: 'کاربر با شماره تماس وارد شده قبلا ثبت نام کرده است',
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
+  }
   async update(id: string, body: updateUserDto) {
     return await this.userModel.findByIdAndUpdate(id, body, { new: true });
   }
@@ -80,7 +103,12 @@ export class UserService {
   async delete(id: string) {
     const user = await this.findOne(id);
     await user.deleteOne();
-    return user;
+    throw new HttpException(
+      {
+        message: 'کاربر با موفقیت حذف شد',
+      },
+      HttpStatus.OK,
+    );
   }
 
   async findOneByMobile(mobile: string) {

@@ -19,6 +19,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization',
     optionsSuccessStatus: 200,
+    preflightContinue: false,
   });
   app.use(helmet());
   // app.use(csrf());
