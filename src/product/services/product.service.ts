@@ -67,6 +67,82 @@ export class ProductService {
     return { count, products };
   }
 
+  async findAllDiscount(
+    queryParams: ProductQueryDto,
+    selectObject: any = { __v: 0 },
+  ) {
+    const { title, sort, category, url, exclude } = queryParams;
+
+    const query: any = { discount: { $ne: 0, $exists: true } };
+
+    if (title) {
+      query.title = { $regex: title, $options: 'i' };
+    }
+
+    if (url) {
+      query.url = { $regex: url, $options: 'i' };
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (exclude?.length) {
+      query._id = { $nin: exclude };
+    }
+
+    const sortObject = sortFunction(sort);
+
+    const products = await this.productModel
+      .find(query)
+      .populate('category', { title: 1 })
+      .sort(sortObject)
+      .select(selectObject)
+      .exec();
+
+    const count = await this.productModel.countDocuments(query);
+
+    return { count, products };
+  }
+
+  async findAllWithoutDiscount(
+    queryParams: ProductQueryDto,
+    selectObject: any = { __v: 0 },
+  ) {
+    const { title, sort, category, url, exclude } = queryParams;
+
+    const query: any = { discount: 0 };
+
+    if (title) {
+      query.title = { $regex: title, $options: 'i' };
+    }
+
+    if (url) {
+      query.url = { $regex: url, $options: 'i' };
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (exclude?.length) {
+      query._id = { $nin: exclude };
+    }
+
+    const sortObject = sortFunction(sort);
+
+    const products = await this.productModel
+      .find(query)
+      .populate('category', { title: 1 })
+      .sort(sortObject)
+      .select(selectObject)
+      .exec();
+
+    const count = await this.productModel.countDocuments(query);
+
+    return { count, products };
+  }
+
   async findOne(id: string, selectObject: any = { __v: 0 }) {
     const product = await this.productModel
       .findOne({ _id: id })

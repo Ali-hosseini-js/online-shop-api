@@ -41,6 +41,16 @@ export class SiteProductController {
     return { category, products, count };
   }
 
+  @Get('discount')
+  findAllDiscount(@Query() queryParams: ProductQueryDto) {
+    return this.productService.findAllDiscount(queryParams);
+  }
+
+  @Get('noDiscount')
+  findAll(@Query() queryParams: ProductQueryDto) {
+    return this.productService.findAllWithoutDiscount(queryParams);
+  }
+
   @Get(':url')
   async findProduct(@Param('url') url: string) {
     const product = await this.productService.findOneWithUrl(url);

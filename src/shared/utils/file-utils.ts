@@ -72,7 +72,7 @@ export const deleteImage = async (fileName: string, folder: string = '') => {
   const imagePath = 'files/' + folder;
   try {
     await fs.promises.unlink(`${imagePath}/main/${fileName}`);
-    await fs.promises.unlink(`${imagePath}/resize/${fileName}`);
+    await fs.promises.unlink(`${imagePath}/resized/${fileName}`);
   } catch (error) {
     console.log(error);
   }
