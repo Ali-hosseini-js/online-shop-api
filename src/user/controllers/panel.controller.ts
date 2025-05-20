@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -34,6 +35,20 @@ export class PanelController {
   @Get('address')
   findAllAddresses(@Query() queryParams: AddressQueryDto) {
     return this.addressService.findAll(queryParams);
+  }
+
+  @Get('address/byUser')
+  async findAllUserAddresses(
+    @Query() queryParams: AddressQueryDto,
+    @User() user: string,
+  ) {
+    const address = await this.addressService.findAddressByUser(user);
+
+    if (address) {
+      return this.addressService.findAll(queryParams);
+    } else {
+      throw new NotFoundException('آدرسی برای این کاربر ثبت نشده است');
+    }
   }
 
   @Post('address')
@@ -69,4 +84,3 @@ export class PanelController {
     return this.userService.update(id, { password: newPassword });
   }
 }
-

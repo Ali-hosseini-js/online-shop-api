@@ -31,6 +31,10 @@ export class CartService {
     return this.getCartDetails(newCart._id.toString());
   }
 
+  async findCartByUser(userId: string) {
+    return this.cartModel.findOne({ user: userId }).exec();
+  }
+
   async createCartItem(body: CartItemDto) {
     const newCartItem = new this.cartItemModel(body);
     await newCartItem.save();
@@ -50,7 +54,13 @@ export class CartService {
   async findCartItems(id: string) {
     const items = await this.cartItemModel
       .find({ cart: id })
-      .populate('product', { title: 1, thumbnail: 1, price: 1, discount: 1 })
+      .populate('product', {
+        title: 1,
+        thumbnail: 1,
+        price: 1,
+        discount: 1,
+        images: 1,
+      })
       .select({ product: 1, quantity: 1 })
       .sort({ createdAt: -1 })
       .exec();
@@ -61,10 +71,14 @@ export class CartService {
   async getCartDetails(id: string) {
     const cart = await this.findCart(id);
     const items = await this.findCartItems(id);
+    const totalQuantity = items.reduce(
+      (sum, item) => sum + item.quantity,
+      0, // Initial value
+    );
 
     if (cart) {
       const prices = await this.getPrices(id);
-      return { cart, items, prices };
+      return { cart, items, prices, totalQuantity };
     } else {
       throw new NotFoundException();
     }

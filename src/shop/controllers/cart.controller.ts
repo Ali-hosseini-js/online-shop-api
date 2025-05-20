@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -24,11 +25,36 @@ import { DeleteCartItemDto } from '../dtos/delete-cart-item.dto';
 export class CartController {
   constructor(private readonly cartService: CartService) {}
   @Post()
-  createNewCart(
+  async createNewCart(
     @Body(new BodyIdPipe(['product'])) body: newCartDto,
     @User() user: string,
   ) {
-    return this.cartService.createNewCart(body, user);
+    const existingCart = await this.cartService.findCartByUser(user);
+    if (existingCart) {
+      // If cart exists, add the product to it
+      return this.cartService.addItemToCart(existingCart._id.toString(), body);
+    } else {
+      // If no cart exists, create a new one
+      return this.cartService.createNewCart(body, user);
+    }
+  }
+
+  @Get()
+  async findUserCart(@User() user: string) {
+    const Cart = await this.cartService.findCartByUser(user);
+    if (Cart) {
+      return { id: Cart._id };
+    }
+  }
+
+  @Get('byUser')
+  async getUserCart(@User() user: string) {
+    const cart = await this.cartService.findCartByUser(user);
+    if (cart) {
+      return this.cartService.getCartDetails(cart._id.toString());
+    } else {
+      throw new NotFoundException('محصولی در سبد خرید وجود ندارد');
+    }
   }
 
   @Get(':id')

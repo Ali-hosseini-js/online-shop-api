@@ -45,8 +45,11 @@ export class AddressService {
     if (address) {
       return address;
     } else {
-      throw new NotFoundException('یافت نشد');
+      throw new NotFoundException('آدرسی برای این کاربر یافت نشد');
     }
+  }
+  async findAddressByUser(userId: string) {
+    return this.addressModel.findOne({ user: userId }).exec();
   }
 
   async create(body: AddressDto, user: string) {
