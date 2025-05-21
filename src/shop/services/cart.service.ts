@@ -94,6 +94,25 @@ export class CartService {
     }
   }
 
+  async decrementQuantity(id: string) {
+    const cartItem = await this.findCartItem(id);
+
+    // Ensure quantity doesn't go below 1
+    cartItem.quantity = Math.max(1, cartItem.quantity - 1);
+    await cartItem.save();
+
+    return { success: true, message: 'Item quantity decrement successfully' };
+  }
+
+  async incrementQuantity(id: string) {
+    const cartItem = await this.findCartItem(id);
+
+    cartItem.quantity += 1;
+    await cartItem.save();
+
+    return { success: true, message: 'Item quantity incremented successfully' };
+  }
+
   async editCart(id: string, body: EditcartItemDto) {
     const cartItem = await this.findCartItem(body.cartItem);
 

@@ -62,6 +62,16 @@ export class CartController {
     return this.cartService.getCartDetails(id);
   }
 
+  @Post('increment/:id')
+  async incrementItem(@Param('id') id: string) {
+    return this.cartService.incrementQuantity(id);
+  }
+
+  @Post('decrement/:id')
+  async decrementItem(@Param('id') id: string) {
+    return this.cartService.decrementQuantity(id);
+  }
+
   @Patch('edit-cart-item/:id')
   editCart(
     @Param('id') id: string,
