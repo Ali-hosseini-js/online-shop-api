@@ -71,9 +71,9 @@ export class PanelController {
     return this.addressService.delete(id);
   }
 
-  @Get('user/:id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  @Get('user')
+  findOne(@User() user: string) {
+    return this.userService.findOne(user);
   }
 
   @Patch('change-password')

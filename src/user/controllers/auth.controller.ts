@@ -67,9 +67,9 @@ export class AuthController {
     try {
       const token = request?.cookies?.access_token;
       const payload = await this.jwtService.verifyAsync(token);
-      return { id: payload?._id, role: payload?.role };
+      return { role: payload?.role };
     } catch (error) {
-      return { id: '', role: '' };
+      return { role: '' };
     }
   }
 }
