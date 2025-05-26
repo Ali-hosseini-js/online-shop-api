@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -21,6 +22,7 @@ import { AddressQueryDto } from '../dtos/address-query.dto';
 import { AddressDto } from '../dtos/address.dto';
 import { UpdateAddressDto } from '../dtos/update-address.dto';
 import { User } from 'src/shared/decorators/user.decorator';
+import { Response } from 'express';
 
 @ApiTags('Panel')
 @UseGuards(JwtGuard)
@@ -82,5 +84,17 @@ export class PanelController {
   ) {
     const { id, newPassword } = body;
     return this.userService.update(id, { password: newPassword });
+  }
+
+  @Get('logout')
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('access_token', {
+      httpOnly: true,
+      secure: false, // Must match `secure` in setCookie
+      sameSite: 'lax', // Must match `sameSite` in setCookie
+      path: '/', // Must match `path` in setCookie
+    });
+
+    return { success: true, message: 'از اکانت خود خارج شدید' };
   }
 }
